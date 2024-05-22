@@ -4,11 +4,28 @@ const tf = require("@tensorflow/tfjs-node");
 const { createCanvas, loadImage } = require("canvas");
 const { v4: uuidv4 } = require("uuid");
 const savePredictionToFirestore = require("./savePredictionToFirestore");
+const cors = require("cors");
+
 require("dotenv").config();
 
 const app = express();
 const port = 3000;
 
+const allowedOrigins = [
+  "https://submissionmlgc-catherineangelr.et.r.appspot.com",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  })
+);
 // Set up multer middleware to handle file uploads with size limit
 const upload = multer({
   dest: "uploads/",
