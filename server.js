@@ -11,7 +11,6 @@ const port = 3000;
 
 // Set up multer middleware to handle file uploads with size limit
 const upload = multer({
-  limits: { fileSize: 1000000 }, // Maximum file size: 1 MB
   dest: "uploads/",
 });
 
@@ -31,7 +30,6 @@ app.post("/predict", upload.single("image"), async (req, res) => {
     }
 
     const img = await loadImage(req.file.path);
-    console.log(img);
     const canvas = createCanvas(224, 224); // Resize canvas to match model input shape
     const ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0, 224, 224); // Resize the image to fit the canvas
@@ -41,16 +39,11 @@ app.post("/predict", upload.single("image"), async (req, res) => {
     tensor = tensor.toFloat();
     tensor = tensor.expandDims(0); // Add batch dimension
 
-    console.log("hello");
     const model = await tf.loadGraphModel(`${process.env.MODEL_URL}`);
-    console.log("checking...");
     const output = model.predict(tensor);
-    console.log("out yet?");
 
     // Convert output to a value between 0 and 1
     const prediction = output.dataSync()[0];
-
-    console.log("prediction now: ", prediction);
     // Classify output
     const result = prediction > 0.5 ? "Cancer" : "Non-cancer";
 
