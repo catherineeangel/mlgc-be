@@ -2,9 +2,9 @@ const express = require("express");
 const multer = require("multer");
 const tf = require("@tensorflow/tfjs-node");
 const { createCanvas, loadImage } = require("canvas");
-
 const { v4: uuidv4 } = require("uuid");
 const savePredictionToFirestore = require("./savePredictionToFirestore");
+require("dotenv").config();
 
 const app = express();
 const port = 3000;
@@ -42,9 +42,7 @@ app.post("/predict", upload.single("image"), async (req, res) => {
     tensor = tensor.expandDims(0); // Add batch dimension
 
     console.log("hello");
-    const model = await tf.loadGraphModel(
-      "https://storage.googleapis.com/mlgc-catherine-bucket/submissions-model/model.json"
-    );
+    const model = await tf.loadGraphModel(`${process.env.MODEL_URL}`);
     console.log("checking...");
     const output = model.predict(tensor);
     console.log("out yet?");
