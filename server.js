@@ -18,7 +18,9 @@ app.post("/predict", upload.single("image"), async (req, res) => {
   try {
     // Check if file was uploaded
     if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded" });
+      return res
+        .status(400)
+        .json({ status: "fail", message: "No file uploaded" });
     }
 
     // Check if file size exceeds limit
