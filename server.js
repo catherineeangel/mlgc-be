@@ -18,9 +18,10 @@ app.post("/predict", upload.single("image"), async (req, res) => {
   try {
     // Check if file was uploaded
     if (!req.file) {
-      return res
-        .status(400)
-        .json({ status: "fail", message: "No file uploaded" });
+      return res.status(400).json({
+        status: "fail",
+        message: "Terjadi kesalahan dalam melakukan prediksi",
+      });
     }
 
     // Check if file size exceeds limit
@@ -63,7 +64,7 @@ app.post("/predict", upload.single("image"), async (req, res) => {
     await savePredictionToFirestore(id, data);
 
     // Send the classification result as the response
-    res.json({
+    res.status(201).json({
       status: "success",
       message: "Model is predicted successfully",
       data,
